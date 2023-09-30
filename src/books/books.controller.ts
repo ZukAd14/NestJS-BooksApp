@@ -51,4 +51,20 @@ export class BooksController {
         await this.booksService.updateById(id, bookData);
         return { success: true };
     }
+
+    @Post('/like')
+    @UseGuards(JwtAuthGuard)
+    async BooksLike(@Body(new ParseUUIDPipe()) data: { bookId: string, userId: string }) {
+        try {
+          const result = await this.booksService.booksLike(data.bookId, data.userId);
+          return result;
+        } catch (error) {
+          if (error.code === 'P2025') {
+            throw new NotFoundException('Book not found');
+          }
+          throw error; 
+        }
+      }
+
+    
 }
