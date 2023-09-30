@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model Author {
   id String @id @default(uuid())
   name String @unique
@@ -27,4 +32,18 @@ model Book {
 
   createdAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  role Role @default(USER)
+  password Password?
+}
+
+model Password {
+  id String @id @default(uuid())
+  hashedPassword String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 }
